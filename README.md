@@ -155,3 +155,7 @@ src/
 └── test/                   # servidor MSW, handlers, fixtures, helper de render
 docs/                       # PRD, TRD, UI-UX, FLOW, DATA, PLAN, capturas
 ```
+
+## Licencia
+
+Distribuido bajo la licencia [MIT](LICENSE). © 2026 Daniel Sierra.
