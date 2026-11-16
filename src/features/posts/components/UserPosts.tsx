@@ -5,6 +5,7 @@ import { ErrorState } from '@/shared/components/ErrorState'
 import { LoadingState } from '@/shared/components/LoadingState'
 import type { PostAuthor } from '../types'
 import { usePosts } from '../usePosts'
+import { PostForm } from './PostForm'
 import { PostList } from './PostList'
 
 interface UserPostsProps {
@@ -31,6 +32,8 @@ export function UserPosts({ author, onBack }: UserPostsProps) {
         </div>
         {posts && <Badge variant="outline">{posts.length} posts</Badge>}
       </header>
+
+      <PostForm userId={author.id} />
 
       {isPending ? (
         <LoadingState label="Loading posts" variant="cards" rows={3} />
