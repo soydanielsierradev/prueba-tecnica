@@ -1,5 +1,6 @@
 import { Users } from 'lucide-react'
 import { useState } from 'react'
+import { UserPosts } from '@/features/posts/components/UserPosts'
 import { UserList } from '@/features/users/components/UserList'
 import type { User } from '@/features/users/types'
 import { cn } from '@/lib/utils'
@@ -25,7 +26,11 @@ function App() {
         </aside>
         <section aria-label="Posts" className={cn(!selectedUser && 'hidden md:block')}>
           {selectedUser ? (
-            <h2 className="text-lg font-semibold">{selectedUser.name}</h2>
+            <UserPosts
+              key={selectedUser.id}
+              author={selectedUser}
+              onBack={() => setSelectedUser(null)}
+            />
           ) : (
             <div className="flex h-full min-h-64 flex-col items-center justify-center gap-2 rounded-lg border border-dashed text-muted-foreground">
               <Users className="size-6" />
