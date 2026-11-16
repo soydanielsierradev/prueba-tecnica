@@ -44,7 +44,7 @@ PRD, TRD, UI/UX, FLOW, DATA, and PLAN in `docs/`.
 1. `npm install tailwindcss @tailwindcss/vite`; `src/index.css` → `@import "tailwindcss";`.
 2. `npm install -D @types/node`; add `tailwindcss()` plugin and `@` alias in `vite.config.ts`; add `paths` (no `baseUrl`, removed in TypeScript 7) in `tsconfig.json` and `tsconfig.app.json`.
 3. `npx shadcn@latest init` (base color: neutral).
-4. `npx shadcn@latest add button input textarea label card skeleton alert badge sonner scroll-area form`.
+4. `npx shadcn@latest add button input textarea label card skeleton alert badge sonner scroll-area field`.
 5. Verify `react-hook-form`, `zod`, and `@hookform/resolvers` are installed and compatible.
 6. Render a shadcn `Button` in `App` to confirm styles load, then remove it.
 
@@ -118,7 +118,7 @@ PRD, TRD, UI/UX, FLOW, DATA, and PLAN in `docs/`.
 ### Step 10 — Create post
 
 1. `useCreatePost()`: `useMutation(createPost)`; `onSuccess` → local post with `crypto.randomUUID()` + `isLocal: true`, `setQueryData(['posts', userId], old => [localPost, ...(old ?? [])])`.
-2. `PostForm`: `useForm` + `zodResolver`, shadcn `Form`, pending button state, inline error alert, `form.reset()` + focus title + `toast.success` on success.
+2. `PostForm`: `useForm` + `zodResolver`, shadcn `Field` + `Controller`, pending button state, inline error alert, `form.reset()` + focus title + `toast.success` on success.
 3. Place `PostForm` above `PostList` in `UserPosts`.
 4. Tests: submit empty → both errors, no request (AC-6); valid submit → new post first + form cleared (AC-7); `POST` returns `500` → error shown, input kept (AC-8, if time allows).
 

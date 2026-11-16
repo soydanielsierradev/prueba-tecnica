@@ -77,7 +77,7 @@ How the user moves through the app and what happens in the code at each step. Re
 1. User fills **Title** and **Body** in `PostForm` (React Hook Form, `zodResolver(postSchema)`).
 2. User clicks **Publish** or presses `Enter` in the title field.
 3. `form.handleSubmit` runs the Zod schema:
-   - **Invalid** → `FormMessage` shows "Title is required" / "Body is required"; focus goes to the first invalid field; **no request is sent**. From now on, errors re-validate on change.
+   - **Invalid** → `FieldError` shows "Title is required" / "Body is required"; focus goes to the first invalid field; **no request is sent**. From now on, errors re-validate on change.
    - **Valid** → `onValid({ title, body })` with trimmed values.
 4. `createPost.mutate({ title, body, userId: selectedUser.id })` → `POST /posts`.
 5. While `isPending`: button disabled, `Loader2` icon, label "Publishing…". Inputs stay editable but a double submit is impossible.

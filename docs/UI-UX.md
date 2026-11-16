@@ -15,14 +15,14 @@ Calm, clean, and fast. It should feel like a well-made internal tool: neutral co
 
 ## 2. Visual style
 
-| Token       | Value                                                                                                                                           |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Theme       | shadcn **neutral** base color, light mode only                                                                                                  |
-| Typography  | System font stack (shadcn default); `text-sm` for body, `text-xl font-semibold` for page title, `font-medium` for card titles                   |
-| Radius      | shadcn default `--radius` (0.625rem)                                                                                                            |
-| Spacing     | Tailwind scale; `gap-4`/`p-4` inside panes, `gap-6` between panes                                                                               |
-| Color usage | `muted-foreground` for secondary text (email, body preview); `destructive` only for errors; `primary` for the main action and the selected user |
-| Icons       | lucide-react, `size-4`, used sparingly: `Search`, `Users`, `FileText`, `AlertCircle`, `RotateCw`, `Loader2`, `ArrowLeft`                        |
+| Token       | Value                                                                                                                                                                 |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Theme       | shadcn `radix-nova` preset, **neutral** base color, light mode only                                                                                                   |
+| Typography  | Geist Variable (Nova preset, self-hosted via `@fontsource-variable/geist`); `text-sm` for body, `text-xl font-semibold` for page title, `font-medium` for card titles |
+| Radius      | shadcn default `--radius` (0.625rem)                                                                                                                                  |
+| Spacing     | Tailwind scale; `gap-4`/`p-4` inside panes, `gap-6` between panes                                                                                                     |
+| Color usage | `muted-foreground` for secondary text (email, body preview); `destructive` only for errors; `primary` for the main action and the selected user                       |
+| Icons       | lucide-react, `size-4`, used sparingly: `Search`, `Users`, `FileText`, `AlertCircle`, `RotateCw`, `Loader2`, `ArrowLeft`                                              |
 
 Dark mode is out of scope (see "more time" in the README).
 
@@ -91,26 +91,26 @@ Single column. Shows **either** the list **or** the selected user's posts.
 
 Inside a `Card` titled "New post", placed above the list so the result of submitting is immediately visible below it.
 
-Built with shadcn `Form` (`FormField` → `FormItem` → `FormLabel` + `FormControl` + `FormMessage`) on top of React Hook Form + Zod.
+Built with shadcn `Field` (`FieldGroup` → `Field` → `FieldLabel` + control + `FieldError`) wired to React Hook Form `Controller` + Zod. (The `radix-nova` registry no longer ships the old `form` component.)
 
-| Element      | Component                                     | Details                                                                                                               |
-| ------------ | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Title        | `FormField name="title"` + `Input`            | Placeholder "Give your post a title"                                                                                  |
-| Body         | `FormField name="body"` + `Textarea`          | 4 rows, placeholder "What do you want to say?"                                                                        |
-| Field error  | `FormMessage`                                 | Renders the Zod message in `text-destructive`; shadcn `Form` sets `aria-invalid` and `aria-describedby` automatically |
-| Submit       | `Button` "Publish"                            | While pending: `disabled`, `Loader2` spinning icon, label "Publishing…"                                               |
-| Submit error | `Alert variant="destructive"` inside the card | "Couldn't publish the post. Please try again." Inputs keep their values                                               |
-| Success      | `Sonner` toast "Post published"               | Form clears, focus returns to the title input, the new post appears first in the list                                 |
+| Element      | Component                                     | Details                                                                                                                                  |
+| ------------ | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Title        | `Controller name="title"` + `Input`           | Placeholder "Give your post a title"                                                                                                     |
+| Body         | `Controller name="body"` + `Textarea`         | 4 rows, placeholder "What do you want to say?"                                                                                           |
+| Field error  | `FieldError`                                  | Renders the Zod message in `text-destructive`; set `data-invalid` on `Field` and `aria-invalid` on the control from `fieldState.invalid` |
+| Submit       | `Button` "Publish"                            | While pending: `disabled`, `Loader2` spinning icon, label "Publishing…"                                                                  |
+| Submit error | `Alert variant="destructive"` inside the card | "Couldn't publish the post. Please try again." Inputs keep their values                                                                  |
+| Success      | `Sonner` toast "Post published"               | Form clears, focus returns to the title input, the new post appears first in the list                                                    |
 
 **Validation timing:** validate on submit (`mode: 'onSubmit'`). After the first failed submit, re-validate on change (`reValidateMode: 'onChange'`) so errors disappear as soon as the user fixes them (no nagging before they try).
 
 ## 5. shadcn components to install
 
 ```
-npx shadcn@latest add button input textarea label card skeleton alert badge sonner scroll-area form
+npx shadcn@latest add button input textarea label card skeleton alert badge sonner scroll-area field
 ```
 
-`form` installs `react-hook-form`, `zod`, and `@hookform/resolvers` if missing. If the current shadcn registry no longer ships `form`, use its `field` component with React Hook Form's `Controller` instead; the behavior in this spec stays the same.
+Install `react-hook-form`, `zod`, and `@hookform/resolvers` separately (`field` does not pull them in).
 
 ## 6. Interaction details
 
