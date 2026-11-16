@@ -29,24 +29,19 @@ function App() {
       <aside
         ref={usersPanelRef}
         aria-label="Users"
-        className={cn(panelClass, selectedUser && 'hidden md:block')}
+        className={cn(panelClass, 'flex flex-col', selectedUser && 'hidden md:flex')}
       >
-        <ScrollArea className="h-full">
-          <div className="flex flex-col gap-5 p-5">
-            <header className="flex items-center gap-3">
-              <AppLogo className="size-11" />
-              <div>
-                <h1 className="text-lg leading-tight font-semibold tracking-tight">
-                  User Posts Explorer
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  Pick a user to read and write posts.
-                </p>
-              </div>
-            </header>
-            <UserList selectedUserId={selectedUser?.id ?? null} onSelectUser={setSelectedUser} />
+        {/* Title and search stay put; only the user list scrolls (inside UserList). */}
+        <header className="flex shrink-0 items-center gap-3 p-5 pb-4">
+          <AppLogo className="size-11" />
+          <div>
+            <h1 className="text-lg leading-tight font-semibold tracking-tight">
+              User Posts Explorer
+            </h1>
+            <p className="text-sm text-muted-foreground">Pick a user to read and write posts.</p>
           </div>
-        </ScrollArea>
+        </header>
+        <UserList selectedUserId={selectedUser?.id ?? null} onSelectUser={setSelectedUser} />
       </aside>
 
       <main aria-label="Posts" className={cn(panelClass, !selectedUser && 'hidden md:block')}>
