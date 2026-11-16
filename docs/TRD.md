@@ -97,7 +97,7 @@ Base URL: `https://jsonplaceholder.typicode.com`, defined once in `shared/api/cl
 - Throws an `Error` with the HTTP status when `response.ok` is false, so TanStack Query moves to the error state.
 - Network failures propagate as thrown errors.
 
-Data shapes and cache rules are detailed in [BACKEND.md](./BACKEND.md).
+Data shapes and cache rules are detailed in [DATA.md](./DATA.md).
 
 ## 4. State management
 
