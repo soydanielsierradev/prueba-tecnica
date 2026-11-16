@@ -32,7 +32,14 @@ export function PostList({ posts }: PostListProps) {
         const number = postNumber(index, posts.length, localCount)
 
         return (
-          <li key={post.id} className="animate-in duration-200 fade-in-0">
+          <li
+            key={post.id}
+            // The one authored moment: a freshly published post settles into the grid.
+            className={cn(
+              post.isLocal &&
+                'motion-safe:animate-in motion-safe:duration-300 motion-safe:fade-in-0 motion-safe:zoom-in-95',
+            )}
+          >
             <Card
               className={cn(
                 'h-full gap-3 rounded-3xl border-0 text-tile-ink shadow-none ring-0',
@@ -40,7 +47,7 @@ export function PostList({ posts }: PostListProps) {
               )}
             >
               <CardHeader className="flex flex-row items-start justify-between gap-2 px-5">
-                <span aria-hidden="true" className="text-5xl leading-none font-light">
+                <span aria-hidden="true" className="text-6xl leading-none font-light md:text-7xl">
                   {number}
                 </span>
                 {post.isLocal && <Badge className="bg-white text-tile-ink">New</Badge>}

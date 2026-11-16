@@ -54,7 +54,11 @@ export function PostForm({ userId, nextNumber }: PostFormProps) {
           </p>
         </div>
         {nextNumber !== null && (
-          <span aria-hidden="true" className="text-6xl leading-none font-light md:text-7xl">
+          <span
+            aria-hidden="true"
+            key={nextNumber}
+            className="text-7xl leading-none font-light motion-safe:animate-in motion-safe:duration-300 motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-3 md:text-8xl"
+          >
             {String(nextNumber).padStart(2, '0')}
           </span>
         )}

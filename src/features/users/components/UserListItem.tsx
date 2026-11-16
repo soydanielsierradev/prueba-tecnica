@@ -20,6 +20,7 @@ export function UserListItem({ user, isSelected, onSelect }: UserListItemProps) 
   return (
     <button
       type="button"
+      data-user-id={user.id}
       aria-current={isSelected ? 'true' : undefined}
       onClick={() => onSelect(user)}
       className={cn(
