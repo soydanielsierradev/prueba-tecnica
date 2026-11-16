@@ -30,6 +30,17 @@ describe('UserPosts', () => {
     expect(screen.getByText('2 posts')).toBeInTheDocument()
   })
 
+  it('uses the singular when the user has exactly one post', async () => {
+    server.use(
+      http.get(`${API_URL}/users/:userId/posts`, () =>
+        HttpResponse.json([{ id: 1, userId: 1, title: 'Only post', body: 'Alone.' }]),
+      ),
+    )
+    renderUserPosts()
+
+    expect(await screen.findByText('1 post')).toBeInTheDocument()
+  })
+
   it('shows an error with a retry action when posts fail to load', async () => {
     const user = userEvent.setup()
     server.use(
