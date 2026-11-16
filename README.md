@@ -11,6 +11,10 @@
   Desarrollada como prueba técnica para una posición de Frontend React (tiempo máximo: 3 horas).
 </p>
 
+<p align="center">
+  <a href="https://user-posts-explorer-sigma.vercel.app"><strong>Ver la demo en vivo →</strong></a>
+</p>
+
 ![User Posts Explorer en escritorio: barra lateral de usuarios a la izquierda; a la derecha, las publicaciones numeradas del usuario seleccionado y el formulario rojo para crear una nueva](docs/screenshots/desktop.png)
 
 ## Funcionalidades
