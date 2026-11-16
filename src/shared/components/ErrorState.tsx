@@ -14,7 +14,7 @@ export function ErrorState({ title, message, onRetry }: ErrorStateProps) {
       <AlertCircle />
       <AlertTitle>{title}</AlertTitle>
       <AlertDescription className="flex flex-col items-start gap-3">
-        {message && <p>{message}</p>}
+        {message && <span>{message}</span>}
         {onRetry && (
           <Button variant="outline" size="sm" onClick={onRetry}>
             <RotateCw />

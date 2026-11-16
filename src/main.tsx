@@ -16,7 +16,9 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <App />
       <Toaster
-        position="bottom-center"
+        position="bottom-right"
+        offset={32}
+        mobileOffset={16}
         toastOptions={{
           classNames: {
             toast: 'rounded-2xl! border-0! bg-tile-ink! text-white! shadow-lg!',
