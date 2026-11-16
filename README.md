@@ -12,6 +12,14 @@
 </p>
 
 <p align="center">
+  <sub>
+    Tiempo de desarrollo: unas <strong>2 h 45 min</strong> de trabajo efectivo en dos sesiones.
+    Los requisitos del enunciado quedaron completos en <strong>~1 h 45 min</strong>; el resto se dedicó a
+    rediseño, accesibilidad, README y despliegue.
+  </sub>
+</p>
+
+<p align="center">
   <a href="https://user-posts-explorer-sigma.vercel.app"><strong>Ver la demo en vivo →</strong></a>
 </p>
 
