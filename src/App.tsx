@@ -1,7 +1,7 @@
 function App() {
   return (
-    <main>
-      <h1>User Posts Explorer</h1>
+    <main className="p-6">
+      <h1 className="text-xl font-semibold">User Posts Explorer</h1>
     </main>
   )
 }
