@@ -45,7 +45,7 @@ export interface Post {
 export type NewPostInput = z.infer<typeof postSchema> // { title: string; body: string }
 
 // features/posts/api.ts
-export type CreatePostPayload = NewPostInput & { userId: number }
+export type CreatePostPayload = NewPostInput & { userId: number } // until step 9: Pick<Post, 'title' | 'body' | 'userId'>
 ```
 
 ## 3. API contract
