@@ -1,3 +1,5 @@
+import type { NewPostInput } from './postSchema'
+
 export interface Post {
   id: number | string // number from the API, string (UUID) for posts created locally
   userId: number
@@ -15,5 +17,4 @@ export interface PostAuthor {
   company: { name: string }
 }
 
-// Refined in PLAN step 9 to derive from the Zod post schema.
-export type CreatePostPayload = Pick<Post, 'title' | 'body' | 'userId'>
+export type CreatePostPayload = NewPostInput & { userId: number }
