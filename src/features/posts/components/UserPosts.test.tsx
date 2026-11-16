@@ -44,4 +44,62 @@ describe('UserPosts', () => {
 
     expect(await screen.findByRole('list', { name: 'Posts' })).toBeInTheDocument()
   })
+
+  describe('creating a post', () => {
+    it('shows both validation errors and sends no request when the form is empty', async () => {
+      const user = userEvent.setup()
+      let postRequests = 0
+      server.use(
+        http.post(`${API_URL}/posts`, () => {
+          postRequests += 1
+          return HttpResponse.json({}, { status: 201 })
+        }),
+      )
+      renderUserPosts()
+      await screen.findByRole('list', { name: 'Posts' })
+
+      await user.click(screen.getByRole('button', { name: 'Publish' }))
+
+      expect(await screen.findByText('Title is required')).toBeInTheDocument()
+      expect(screen.getByText('Body is required')).toBeInTheDocument()
+      expect(screen.getByLabelText('Title')).toHaveAttribute('aria-invalid', 'true')
+      expect(postRequests).toBe(0)
+    })
+
+    it('adds the new post first and clears the form when the API succeeds', async () => {
+      const user = userEvent.setup()
+      renderUserPosts()
+      const list = await screen.findByRole('list', { name: 'Posts' })
+
+      await user.type(screen.getByLabelText('Title'), '  My new post  ')
+      await user.type(screen.getByLabelText('Body'), 'Written in a test')
+      await user.click(screen.getByRole('button', { name: 'Publish' }))
+
+      expect(await within(list).findByText('My new post')).toBeInTheDocument()
+      const [firstItem] = within(list).getAllByRole('listitem')
+      expect(within(firstItem).getByRole('heading')).toHaveTextContent('My new post')
+      expect(within(firstItem).getByText('New')).toBeInTheDocument()
+      expect(screen.getByText('3 posts')).toBeInTheDocument()
+      expect(screen.getByLabelText('Title')).toHaveValue('')
+      expect(screen.getByLabelText('Body')).toHaveValue('')
+    })
+
+    it('shows an error and keeps the input when the API fails', async () => {
+      const user = userEvent.setup()
+      server.use(http.post(`${API_URL}/posts`, () => new HttpResponse(null, { status: 500 })))
+      renderUserPosts()
+      await screen.findByRole('list', { name: 'Posts' })
+
+      await user.type(screen.getByLabelText('Title'), 'Will fail')
+      await user.type(screen.getByLabelText('Body'), 'Server is down')
+      await user.click(screen.getByRole('button', { name: 'Publish' }))
+
+      expect(
+        await screen.findByText("Couldn't publish the post. Please try again."),
+      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Title')).toHaveValue('Will fail')
+      expect(screen.getByLabelText('Body')).toHaveValue('Server is down')
+      expect(screen.getByText('2 posts')).toBeInTheDocument()
+    })
+  })
 })
