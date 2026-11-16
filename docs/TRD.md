@@ -11,7 +11,9 @@ Technical blueprint for the app described in [PRD.md](./PRD.md). When in doubt, 
 | Server state | **TanStack Query** | Gives loading, error, retry, and caching for free; mutations update the cache cleanly. Avoids hand-rolled `useEffect` fetching and its race conditions. |
 | HTTP | Native **`fetch`** wrapped in a tiny client | No need for axios for three endpoints. |
 | Forms | **Controlled inputs + pure `validatePost` function** | Two fields do not justify react-hook-form/zod; a pure function is trivially unit-testable. |
-| Styling | **CSS Modules** + a global `index.css` with CSS variables | No extra dependency, scoped class names, enough for a small UI. |
+| Styling | **Tailwind CSS v4** via `@tailwindcss/vite` (no `tailwind.config`, CSS-first config in `index.css`) | Utility-first, fast iteration, theme tokens as CSS variables. |
+| Components | **shadcn/ui** (copied into `src/components/ui`, built on Radix + Tailwind) | Accessible primitives (labels, focus, ARIA) out of the box; the code is owned by the project, not a black-box dependency. |
+| Icons | **lucide-react** (shadcn default) | Comes with shadcn; consistent icon set. |
 | Routing | **None** — selection lives in React state | Only two views (list + detail) shown side by side. A router adds setup without user value here. |
 | Testing | **Vitest** + **React Testing Library** + **user-event** + **jsdom** | Required by the assessment; Vitest shares Vite's config. |
 | API mocking (tests) | **MSW** (Mock Service Worker) | Tests exercise the real `fetch` path; handlers can simulate errors per test. |
@@ -27,13 +29,17 @@ Feature-based ("screaming") structure. Each feature owns its API calls, hooks, a
 src/
 ├── main.tsx                 # React root + QueryClientProvider
 ├── App.tsx                  # Layout and selected-user state
-├── index.css                # CSS variables, reset, base styles
+├── index.css                # @import "tailwindcss" + shadcn theme tokens
+├── components/
+│   └── ui/                  # shadcn-generated primitives (do not hand-edit lightly)
+├── lib/
+│   └── utils.ts             # shadcn `cn()` helper
 ├── shared/
 │   ├── api/
 │   │   └── client.ts        # fetch wrapper: base URL, JSON, error on !ok
 │   └── components/
-│       ├── Spinner.tsx
-│       └── ErrorMessage.tsx # message + optional retry button
+│       ├── LoadingState.tsx # skeletons with role="status"
+│       └── ErrorState.tsx   # shadcn Alert + optional retry button
 ├── features/
 │   ├── users/
 │   │   ├── api.ts           # getUsers()
@@ -67,6 +73,14 @@ src/
 - **Pure logic out of components:** `filterUsers` and `validatePost` are plain functions with no React imports.
 - `features/users` must not import from `features/posts` and the reverse. Only `App.tsx` composes them.
 - No `any`. API responses are typed through `types.ts`.
+- Imports use the `@/` alias (`@/features/...`, `@/components/ui/...`), configured in both `vite.config.ts` and `tsconfig`.
+- `components/ui` holds only shadcn primitives; app-specific components live in their feature.
+
+**Setup notes (Vite + Tailwind v4 + shadcn)**
+1. `npm create vite@latest . -- --template react-ts`
+2. `npm install tailwindcss @tailwindcss/vite` and replace `src/index.css` with `@import "tailwindcss";`
+3. `npm install -D @types/node`; add `tailwindcss()` plugin and the `@` alias in `vite.config.ts`; add `baseUrl`/`paths` in `tsconfig.json` and `tsconfig.app.json`.
+4. `npx shadcn@latest init`, then add only the components listed in [UI-UX.md](./UI-UX.md).
 
 ## 3. API integration
 
@@ -107,8 +121,8 @@ Data shapes and cache rules are detailed in [BACKEND.md](./BACKEND.md).
 
 ## 6. Error and loading handling
 
-- `isPending` → `<Spinner />` with an accessible label (`role="status"`).
-- `isError` → `<ErrorMessage message onRetry={refetch} />` with `role="alert"`.
+- `isPending` → `<LoadingState />` (shadcn `Skeleton`s) wrapped with `role="status"` and an accessible label.
+- `isError` → `<ErrorState message onRetry={refetch} />` (shadcn `Alert`, `role="alert"`).
 - Mutation: submit button shows "Saving…" and is `disabled` while `isPending`; on error, an inline `role="alert"` message appears and the inputs keep their values.
 
 ## 7. Accessibility baseline
@@ -138,4 +152,4 @@ Commands: `npm test` (watch), `npm run test:run` (CI, single run).
 
 ## 9. Out of scope (technical)
 
-No SSR, no global state library (Redux/Zustand), no component library, no E2E tests, no CI pipeline, no deployment.
+No SSR, no global state library (Redux/Zustand), no form library (react-hook-form/zod, so shadcn's `Form` component is not used), no E2E tests, no CI pipeline, no deployment.
