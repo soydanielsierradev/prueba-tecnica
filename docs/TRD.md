@@ -10,7 +10,7 @@ Technical blueprint for the app described in [PRD.md](./PRD.md). When in doubt, 
 | UI | **React** + **TypeScript** (`strict: true`) | Required by the assessment. |
 | Server state | **TanStack Query** | Gives loading, error, retry, and caching for free; mutations update the cache cleanly. Avoids hand-rolled `useEffect` fetching and its race conditions. |
 | HTTP | Native **`fetch`** wrapped in a tiny client | No need for axios for three endpoints. |
-| Forms | **Controlled inputs + pure `validatePost` function** | Two fields do not justify react-hook-form/zod; a pure function is trivially unit-testable. |
+| Forms | **React Hook Form** + **Zod** (via `@hookform/resolvers`) + shadcn `Form` | Declarative schema as single source of truth for validation and types (`z.infer`); uncontrolled inputs keep re-renders low; shadcn `Form` wires labels, errors, and ARIA automatically. Scales if the form grows. |
 | Styling | **Tailwind CSS v4** via `@tailwindcss/vite` (no `tailwind.config`, CSS-first config in `index.css`) | Utility-first, fast iteration, theme tokens as CSS variables. |
 | Components | **shadcn/ui** (copied into `src/components/ui`, built on Radix + Tailwind) | Accessible primitives (labels, focus, ARIA) out of the box; the code is owned by the project, not a black-box dependency. |
 | Icons | **lucide-react** (shadcn default) | Comes with shadcn; consistent icon set. |
@@ -55,11 +55,11 @@ src/
 │       ├── types.ts         # Post, NewPost
 │       ├── usePosts.ts      # useQuery wrapper
 │       ├── useCreatePost.ts # useMutation wrapper, updates cache
-│       ├── validatePost.ts  # pure validation
+│       ├── postSchema.ts    # Zod schema + inferred NewPostInput type
 │       └── components/
 │           ├── UserPosts.tsx    # container: posts + form
 │           ├── PostList.tsx     # presentational
-│           └── PostForm.tsx     # controlled form
+│           └── PostForm.tsx     # React Hook Form + zodResolver
 └── test/
     ├── setup.ts             # jest-dom matchers, MSW lifecycle
     ├── server.ts            # MSW server
@@ -70,7 +70,7 @@ src/
 
 **Rules**
 - **Container / presentational split:** containers (`UserList`, `UserPosts`) call hooks; presentational components receive props only and never fetch.
-- **Pure logic out of components:** `filterUsers` and `validatePost` are plain functions with no React imports.
+- **Pure logic out of components:** `filterUsers` and `postSchema` have no React imports.
 - `features/users` must not import from `features/posts` and the reverse. Only `App.tsx` composes them.
 - No `any`. API responses are typed through `types.ts`.
 - Imports use the `@/` alias (`@/features/...`, `@/components/ui/...`), configured in both `vite.config.ts` and `tsconfig`.
@@ -108,16 +108,26 @@ Data shapes and cache rules are detailed in [BACKEND.md](./BACKEND.md).
 | Selected user | `useState` in `App` | Stores the full `User` (or `null`). |
 | Posts per user | TanStack Query, key `['posts', userId]` | `staleTime: Infinity` so locally created posts survive re-selecting the user during the session. |
 | Created post | `useMutation` → `setQueryData(['posts', userId], prepend)` | Server response is merged with a **local unique id** (`crypto.randomUUID()` or a negative counter) because the API always returns `id: 101`. |
-| Form fields + errors | `useState` in `PostForm` | Errors shown after first submit attempt. |
+| Form fields + errors | `useForm` in `PostForm` | `mode: 'onSubmit'`, `reValidateMode: 'onChange'`: errors appear after the first submit and clear as the user fixes them. `form.reset()` on success. |
 
 **QueryClient defaults:** `retry: 1` in the app; `retry: false` in tests (so error tests are fast and deterministic). `refetchOnWindowFocus: false`.
 
 ## 5. Validation
 
-`validatePost({ title, body })` returns `{ title?: string; body?: string }`.
-- A field is invalid when `value.trim() === ''`.
-- Messages: `"Title is required"`, `"Body is required"`.
-- Submission proceeds only when the result has no keys. Values are trimmed before sending.
+`postSchema.ts`:
+
+```ts
+export const postSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required'),
+  body: z.string().trim().min(1, 'Body is required'),
+})
+export type NewPostInput = z.infer<typeof postSchema>
+```
+
+- `.trim()` makes whitespace-only values invalid and sends trimmed values.
+- `useForm<NewPostInput>({ resolver: zodResolver(postSchema), defaultValues: { title: '', body: '' } })`.
+- `handleSubmit` only calls the mutation when the schema passes, so no request is sent on invalid input.
+- Check that the installed `@hookform/resolvers` version supports the installed Zod major version.
 
 ## 6. Error and loading handling
 
@@ -140,7 +150,7 @@ Behavior-first tests: query by role/label/text, interact with `user-event`, mock
 | # | Test | Covers |
 |---|------|--------|
 | 1 | `filterUsers` unit test | Case-insensitive substring match, empty term returns all |
-| 2 | `validatePost` unit test | Empty and whitespace-only fields fail; valid input passes |
+| 2 | `postSchema` unit test | Empty and whitespace-only fields fail with the right messages; valid input passes trimmed |
 | 3 | `UserList` integration | Loading indicator → users rendered → search filters → empty message (AC-1, AC-2, AC-3) |
 | 4 | `UserList` error | Server 500 → error alert + retry button (AC-4) |
 | 5 | `PostForm` validation | Submitting empty shows both errors, no request sent (AC-6) |
@@ -152,4 +162,4 @@ Commands: `npm test` (watch), `npm run test:run` (CI, single run).
 
 ## 9. Out of scope (technical)
 
-No SSR, no global state library (Redux/Zustand), no form library (react-hook-form/zod, so shadcn's `Form` component is not used), no E2E tests, no CI pipeline, no deployment.
+No SSR, no global state library (Redux/Zustand), no E2E tests, no CI pipeline, no deployment.
