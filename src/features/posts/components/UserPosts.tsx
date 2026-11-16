@@ -17,26 +17,32 @@ export function UserPosts({ author, onBack }: UserPostsProps) {
   const { data: posts, isPending, isError, error, refetch } = usePosts(author.id)
 
   return (
-    <div className="flex flex-col gap-4">
-      <Button variant="ghost" size="sm" onClick={onBack} className="self-start md:hidden">
+    <div className="mx-auto flex max-w-5xl flex-col gap-6 p-5 md:p-8">
+      <Button variant="ghost" size="sm" onClick={onBack} className="-ml-2 self-start md:hidden">
         <ArrowLeft />
         Back to users
       </Button>
 
-      <header className="flex items-start justify-between gap-3">
-        <div className="flex flex-col gap-0.5">
-          <h2 className="text-lg font-semibold">{author.name}</h2>
+      <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+        <div className="flex flex-col gap-1.5">
+          <h2 className="text-3xl font-bold tracking-tight text-balance text-primary md:text-4xl">
+            {author.name}
+          </h2>
           <p className="text-sm text-muted-foreground">
             {author.email} · {author.company.name}
           </p>
         </div>
-        {posts && <Badge variant="outline">{posts.length} posts</Badge>}
+        {posts && (
+          <Badge variant="outline" className="h-7 rounded-full px-3 text-sm tabular-nums">
+            {posts.length} posts
+          </Badge>
+        )}
       </header>
 
-      <PostForm userId={author.id} />
+      <PostForm userId={author.id} nextNumber={posts ? posts.length + 1 : null} />
 
       {isPending ? (
-        <LoadingState label="Loading posts" variant="cards" rows={3} />
+        <LoadingState label="Loading posts" variant="cards" rows={4} />
       ) : isError ? (
         <ErrorState
           title="Couldn't load posts"
