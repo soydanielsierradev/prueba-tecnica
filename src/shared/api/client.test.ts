@@ -1,6 +1,20 @@
 import { http, HttpResponse } from 'msw'
 import { server } from '@/test/server'
-import { API_URL, ApiError, apiGet, apiPost } from './client'
+import { API_URL, ApiError, apiGet, apiPost, describeError } from './client'
+
+describe('describeError', () => {
+  it('names the HTTP status for server errors', () => {
+    expect(describeError(new ApiError(503))).toBe(
+      'The server responded with an error (503). Please try again.',
+    )
+  })
+
+  it('suggests checking the connection for anything else', () => {
+    expect(describeError(new TypeError('Failed to fetch'))).toBe(
+      'Check your connection and try again.',
+    )
+  })
+})
 
 describe('api client', () => {
   it('returns the parsed JSON of a successful GET', async () => {
