@@ -1,20 +1,7 @@
-// Minimal local shapes; the feature types in src/features/*/types.ts replace these in PLAN step 4.
-interface UserFixture {
-  id: number
-  name: string
-  username: string
-  email: string
-  company: { name: string }
-}
+import type { Post } from '@/features/posts/types'
+import type { User } from '@/features/users/types'
 
-interface PostFixture {
-  id: number
-  userId: number
-  title: string
-  body: string
-}
-
-export const users: UserFixture[] = [
+export const users: User[] = [
   {
     id: 1,
     name: 'Leanne Graham',
@@ -38,7 +25,7 @@ export const users: UserFixture[] = [
   },
 ]
 
-export const posts: PostFixture[] = [
+export const posts: Post[] = [
   {
     id: 1,
     userId: 1,
