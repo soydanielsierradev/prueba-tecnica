@@ -2,3 +2,5 @@ dist
 coverage
 node_modules
 src/components/ui
+.impeccable/review
+.impeccable/mocks
