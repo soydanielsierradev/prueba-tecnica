@@ -7,6 +7,7 @@ Visual and interaction spec for the app in [PRD.md](./PRD.md), built with Tailwi
 Calm, clean, and fast. It should feel like a well-made internal tool: neutral colors, generous whitespace, no decoration that does not carry information. Every wait and every failure is visible and explained; the user is never left staring at a blank area.
 
 **Principles**
+
 1. **State is always visible** — loading, empty, error, and success each have a dedicated UI.
 2. **One screen, two panes** — the list never disappears on desktop, so switching users is one click.
 3. **Forgiving forms** — errors are specific, appear next to the field, and never wipe what was typed.
@@ -14,14 +15,14 @@ Calm, clean, and fast. It should feel like a well-made internal tool: neutral co
 
 ## 2. Visual style
 
-| Token | Value |
-|-------|-------|
-| Theme | shadcn **neutral** base color, light mode only |
-| Typography | System font stack (shadcn default); `text-sm` for body, `text-xl font-semibold` for page title, `font-medium` for card titles |
-| Radius | shadcn default `--radius` (0.625rem) |
-| Spacing | Tailwind scale; `gap-4`/`p-4` inside panes, `gap-6` between panes |
+| Token       | Value                                                                                                                                           |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Theme       | shadcn **neutral** base color, light mode only                                                                                                  |
+| Typography  | System font stack (shadcn default); `text-sm` for body, `text-xl font-semibold` for page title, `font-medium` for card titles                   |
+| Radius      | shadcn default `--radius` (0.625rem)                                                                                                            |
+| Spacing     | Tailwind scale; `gap-4`/`p-4` inside panes, `gap-6` between panes                                                                               |
 | Color usage | `muted-foreground` for secondary text (email, body preview); `destructive` only for errors; `primary` for the main action and the selected user |
-| Icons | lucide-react, `size-4`, used sparingly: `Search`, `Users`, `FileText`, `AlertCircle`, `RotateCw`, `Loader2`, `ArrowLeft` |
+| Icons       | lucide-react, `size-4`, used sparingly: `Search`, `Users`, `FileText`, `AlertCircle`, `RotateCw`, `Loader2`, `ArrowLeft`                        |
 
 Dark mode is out of scope (see "more time" in the README).
 
@@ -54,6 +55,7 @@ Dark mode is out of scope (see "more time" in the README).
 ### Mobile (< `md`)
 
 Single column. Shows **either** the list **or** the selected user's posts.
+
 - Selecting a user swaps to the posts view.
 - The posts view shows a `← Back to users` ghost button at the top.
 - Search term is preserved when going back.
@@ -62,24 +64,24 @@ Single column. Shows **either** the list **or** the selected user's posts.
 
 ### 4.1 Users pane
 
-| State | UI |
-|-------|----|
-| Loading | 6 `Skeleton` rows (avatar-sized circle + two text lines), wrapped in `role="status"` with `aria-label="Loading users"` |
-| Error | `Alert variant="destructive"` with `AlertCircle`, title "Couldn't load users", the error message, and an outline `Button` "Retry" (`RotateCw`) |
-| Loaded | Search `Input` (with `Search` icon) + list of user buttons |
-| No matches | Muted text centered: `No users match "<term>"` |
+| State      | UI                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Loading    | 6 `Skeleton` rows (avatar-sized circle + two text lines), wrapped in `role="status"` with `aria-label="Loading users"`                         |
+| Error      | `Alert variant="destructive"` with `AlertCircle`, title "Couldn't load users", the error message, and an outline `Button` "Retry" (`RotateCw`) |
+| Loaded     | Search `Input` (with `Search` icon) + list of user buttons                                                                                     |
+| No matches | Muted text centered: `No users match "<term>"`                                                                                                 |
 
 **User item:** a full-width ghost `Button`-like row showing **name** (`font-medium`) and **email** (`text-muted-foreground text-xs`). Selected item uses `bg-accent` and `aria-current="true"`.
 
 ### 4.2 Posts pane
 
-| State | UI |
-|-------|----|
-| No user selected (desktop) | Centered empty state: `Users` icon + "Select a user to see their posts" |
-| Loading | Header with the user's name (already known) + 3 `Skeleton` cards, `aria-label="Loading posts"` |
-| Error | Same `ErrorState` pattern: "Couldn't load posts" + Retry |
-| Loaded | User header → `PostForm` card → list of post `Card`s, newest first |
-| Loaded, zero posts | Form + muted text "This user has no posts yet" |
+| State                      | UI                                                                                             |
+| -------------------------- | ---------------------------------------------------------------------------------------------- |
+| No user selected (desktop) | Centered empty state: `Users` icon + "Select a user to see their posts"                        |
+| Loading                    | Header with the user's name (already known) + 3 `Skeleton` cards, `aria-label="Loading posts"` |
+| Error                      | Same `ErrorState` pattern: "Couldn't load posts" + Retry                                       |
+| Loaded                     | User header → `PostForm` card → list of post `Card`s, newest first                             |
+| Loaded, zero posts         | Form + muted text "This user has no posts yet"                                                 |
 
 **User header:** name (`text-lg font-semibold`), email and company name in muted text, post count `Badge` ("10 posts").
 
@@ -91,14 +93,14 @@ Inside a `Card` titled "New post", placed above the list so the result of submit
 
 Built with shadcn `Form` (`FormField` → `FormItem` → `FormLabel` + `FormControl` + `FormMessage`) on top of React Hook Form + Zod.
 
-| Element | Component | Details |
-|---------|-----------|---------|
-| Title | `FormField name="title"` + `Input` | Placeholder "Give your post a title" |
-| Body | `FormField name="body"` + `Textarea` | 4 rows, placeholder "What do you want to say?" |
-| Field error | `FormMessage` | Renders the Zod message in `text-destructive`; shadcn `Form` sets `aria-invalid` and `aria-describedby` automatically |
-| Submit | `Button` "Publish" | While pending: `disabled`, `Loader2` spinning icon, label "Publishing…" |
-| Submit error | `Alert variant="destructive"` inside the card | "Couldn't publish the post. Please try again." Inputs keep their values |
-| Success | `Sonner` toast "Post published" | Form clears, focus returns to the title input, the new post appears first in the list |
+| Element      | Component                                     | Details                                                                                                               |
+| ------------ | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Title        | `FormField name="title"` + `Input`            | Placeholder "Give your post a title"                                                                                  |
+| Body         | `FormField name="body"` + `Textarea`          | 4 rows, placeholder "What do you want to say?"                                                                        |
+| Field error  | `FormMessage`                                 | Renders the Zod message in `text-destructive`; shadcn `Form` sets `aria-invalid` and `aria-describedby` automatically |
+| Submit       | `Button` "Publish"                            | While pending: `disabled`, `Loader2` spinning icon, label "Publishing…"                                               |
+| Submit error | `Alert variant="destructive"` inside the card | "Couldn't publish the post. Please try again." Inputs keep their values                                               |
+| Success      | `Sonner` toast "Post published"               | Form clears, focus returns to the title input, the new post appears first in the list                                 |
 
 **Validation timing:** validate on submit (`mode: 'onSubmit'`). After the first failed submit, re-validate on change (`reValidateMode: 'onChange'`) so errors disappear as soon as the user fixes them (no nagging before they try).
 

@@ -10,14 +10,14 @@ Technical assessment for a Frontend React position: a small React + TypeScript a
 
 Read the relevant spec before writing code. If code and docs disagree, update the doc first, then the code.
 
-| Doc | Use it for |
-|-----|-----------|
-| [docs/PRD.md](docs/PRD.md) | What to build, non-goals, acceptance criteria AC-1…AC-8 |
-| [docs/TRD.md](docs/TRD.md) | Stack, folder structure, architecture rules, testing strategy |
-| [docs/UI-UX.md](docs/UI-UX.md) | Layout, states, shadcn components, copy |
-| [docs/FLOW.md](docs/FLOW.md) | User journeys, state ↔ UI matrix, component wiring |
-| [docs/DATA.md](docs/DATA.md) | Types, API contract, cache rules (`id: 101` handling) |
-| [docs/PLAN.md](docs/PLAN.md) | **Build order.** Work one step at a time, in sequence |
+| Doc                            | Use it for                                                    |
+| ------------------------------ | ------------------------------------------------------------- |
+| [docs/PRD.md](docs/PRD.md)     | What to build, non-goals, acceptance criteria AC-1…AC-8       |
+| [docs/TRD.md](docs/TRD.md)     | Stack, folder structure, architecture rules, testing strategy |
+| [docs/UI-UX.md](docs/UI-UX.md) | Layout, states, shadcn components, copy                       |
+| [docs/FLOW.md](docs/FLOW.md)   | User journeys, state ↔ UI matrix, component wiring            |
+| [docs/DATA.md](docs/DATA.md)   | Types, API contract, cache rules (`id: 101` handling)         |
+| [docs/PLAN.md](docs/PLAN.md)   | **Build order.** Work one step at a time, in sequence         |
 
 ## Stack (do not substitute)
 
@@ -32,7 +32,7 @@ npm run dev        # dev server
 npm test           # vitest watch
 npm run test:run   # vitest single run
 npm run build      # type-check + production build
-npm run lint       # eslint
+npm run lint       # oxlint
 ```
 
 Run `test:run`, `build`, and `lint` after every PLAN step. Do not move on with any of them failing.

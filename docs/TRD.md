@@ -4,22 +4,22 @@ Technical blueprint for the app described in [PRD.md](./PRD.md). When in doubt, 
 
 ## 1. Stack
 
-| Concern | Choice | Why |
-|---------|--------|-----|
-| Build tool | **Vite** (`react-ts` template) | Fast dev server, zero-config TS, native Vitest integration. |
-| UI | **React** + **TypeScript** (`strict: true`) | Required by the assessment. |
-| Server state | **TanStack Query** | Gives loading, error, retry, and caching for free; mutations update the cache cleanly. Avoids hand-rolled `useEffect` fetching and its race conditions. |
-| HTTP | Native **`fetch`** wrapped in a tiny client | No need for axios for three endpoints. |
-| Forms | **React Hook Form** + **Zod** (via `@hookform/resolvers`) + shadcn `Form` | Declarative schema as single source of truth for validation and types (`z.infer`); uncontrolled inputs keep re-renders low; shadcn `Form` wires labels, errors, and ARIA automatically. Scales if the form grows. |
-| Styling | **Tailwind CSS v4** via `@tailwindcss/vite` (no `tailwind.config`, CSS-first config in `index.css`) | Utility-first, fast iteration, theme tokens as CSS variables. |
-| Components | **shadcn/ui** (copied into `src/components/ui`, built on Radix + Tailwind) | Accessible primitives (labels, focus, ARIA) out of the box; the code is owned by the project, not a black-box dependency. |
-| Icons | **lucide-react** (shadcn default) | Comes with shadcn; consistent icon set. |
-| Routing | **None** — selection lives in React state | Only two views (list + detail) shown side by side. A router adds setup without user value here. |
-| Testing | **Vitest** + **React Testing Library** + **user-event** + **jsdom** | Required by the assessment; Vitest shares Vite's config. |
-| API mocking (tests) | **MSW** (Mock Service Worker) | Tests exercise the real `fetch` path; handlers can simulate errors per test. |
-| Lint/format | ESLint (Vite default) + Prettier | Consistency; no time spent on custom rules. |
+| Concern             | Choice                                                                                              | Why                                                                                                                                                                                                               |
+| ------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Build tool          | **Vite** (`react-ts` template)                                                                      | Fast dev server, zero-config TS, native Vitest integration.                                                                                                                                                       |
+| UI                  | **React** + **TypeScript** (`strict: true`)                                                         | Required by the assessment.                                                                                                                                                                                       |
+| Server state        | **TanStack Query**                                                                                  | Gives loading, error, retry, and caching for free; mutations update the cache cleanly. Avoids hand-rolled `useEffect` fetching and its race conditions.                                                           |
+| HTTP                | Native **`fetch`** wrapped in a tiny client                                                         | No need for axios for three endpoints.                                                                                                                                                                            |
+| Forms               | **React Hook Form** + **Zod** (via `@hookform/resolvers`) + shadcn `Form`                           | Declarative schema as single source of truth for validation and types (`z.infer`); uncontrolled inputs keep re-renders low; shadcn `Form` wires labels, errors, and ARIA automatically. Scales if the form grows. |
+| Styling             | **Tailwind CSS v4** via `@tailwindcss/vite` (no `tailwind.config`, CSS-first config in `index.css`) | Utility-first, fast iteration, theme tokens as CSS variables.                                                                                                                                                     |
+| Components          | **shadcn/ui** (copied into `src/components/ui`, built on Radix + Tailwind)                          | Accessible primitives (labels, focus, ARIA) out of the box; the code is owned by the project, not a black-box dependency.                                                                                         |
+| Icons               | **lucide-react** (shadcn default)                                                                   | Comes with shadcn; consistent icon set.                                                                                                                                                                           |
+| Routing             | **None** — selection lives in React state                                                           | Only two views (list + detail) shown side by side. A router adds setup without user value here.                                                                                                                   |
+| Testing             | **Vitest** + **React Testing Library** + **user-event** + **jsdom**                                 | Required by the assessment; Vitest shares Vite's config.                                                                                                                                                          |
+| API mocking (tests) | **MSW** (Mock Service Worker)                                                                       | Tests exercise the real `fetch` path; handlers can simulate errors per test.                                                                                                                                      |
+| Lint/format         | oxlint (current Vite template default) + Prettier                                                   | Consistency; no time spent on custom rules.                                                                                                                                                                       |
 
-Runtime: Node ≥ 20.19 (current machine: Node 20.20, npm 10.8). Use the latest stable versions available when scaffolding; do not pin to guesses.
+Runtime: **Node 24 LTS**, pinned with mise (`mise.toml`) and `engines` (≥ 22.12, required by Vitest 5, jsdom, and MSW 3). TypeScript 7 (template default) removed `baseUrl`, so `paths` are relative to each tsconfig. Use the latest stable versions available when scaffolding; do not pin to guesses.
 
 ## 2. Architecture
 
@@ -69,6 +69,7 @@ src/
 ```
 
 **Rules**
+
 - **Container / presentational split:** containers (`UserList`, `UserPosts`) call hooks; presentational components receive props only and never fetch.
 - **Pure logic out of components:** `filterUsers` and `postSchema` have no React imports.
 - `features/users` must not import from `features/posts` and the reverse. Only `App.tsx` composes them.
@@ -77,22 +78,24 @@ src/
 - `components/ui` holds only shadcn primitives; app-specific components live in their feature.
 
 **Setup notes (Vite + Tailwind v4 + shadcn)**
+
 1. `npm create vite@latest . -- --template react-ts`
 2. `npm install tailwindcss @tailwindcss/vite` and replace `src/index.css` with `@import "tailwindcss";`
-3. `npm install -D @types/node`; add `tailwindcss()` plugin and the `@` alias in `vite.config.ts`; add `baseUrl`/`paths` in `tsconfig.json` and `tsconfig.app.json`.
+3. `npm install -D @types/node`; add `tailwindcss()` plugin and the `@` alias in `vite.config.ts`; add `paths` (no `baseUrl`, removed in TypeScript 7) in `tsconfig.json` and `tsconfig.app.json`.
 4. `npx shadcn@latest init`, then add only the components listed in [UI-UX.md](./UI-UX.md).
 
 ## 3. API integration
 
 Base URL: `https://jsonplaceholder.typicode.com`, defined once in `shared/api/client.ts`.
 
-| Function | Request | Returns |
-|----------|---------|---------|
-| `getUsers()` | `GET /users` | `User[]` |
-| `getUserPosts(userId)` | `GET /users/{userId}/posts` | `Post[]` |
-| `createPost(input)` | `POST /posts` with JSON body `{ title, body, userId }` | `Post` |
+| Function               | Request                                                | Returns  |
+| ---------------------- | ------------------------------------------------------ | -------- |
+| `getUsers()`           | `GET /users`                                           | `User[]` |
+| `getUserPosts(userId)` | `GET /users/{userId}/posts`                            | `Post[]` |
+| `createPost(input)`    | `POST /posts` with JSON body `{ title, body, userId }` | `Post`   |
 
 **Client contract**
+
 - Sets `Content-Type: application/json` on requests with a body.
 - Throws an `Error` with the HTTP status when `response.ok` is false, so TanStack Query moves to the error state.
 - Network failures propagate as thrown errors.
@@ -101,14 +104,14 @@ Data shapes and cache rules are detailed in [DATA.md](./DATA.md).
 
 ## 4. State management
 
-| State | Owner | Notes |
-|-------|-------|-------|
-| Users list | TanStack Query, key `['users']` | Fetched once; `staleTime: Infinity` (data never changes). |
-| Search term | `useState` in `UserList` | Filtering derived during render, no extra state. |
-| Selected user | `useState` in `App` | Stores the full `User` (or `null`). |
-| Posts per user | TanStack Query, key `['posts', userId]` | `staleTime: Infinity` so locally created posts survive re-selecting the user during the session. |
-| Created post | `useMutation` → `setQueryData(['posts', userId], prepend)` | Server response is merged with a **local unique id** (`crypto.randomUUID()` or a negative counter) because the API always returns `id: 101`. |
-| Form fields + errors | `useForm` in `PostForm` | `mode: 'onSubmit'`, `reValidateMode: 'onChange'`: errors appear after the first submit and clear as the user fixes them. `form.reset()` on success. |
+| State                | Owner                                                      | Notes                                                                                                                                               |
+| -------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Users list           | TanStack Query, key `['users']`                            | Fetched once; `staleTime: Infinity` (data never changes).                                                                                           |
+| Search term          | `useState` in `UserList`                                   | Filtering derived during render, no extra state.                                                                                                    |
+| Selected user        | `useState` in `App`                                        | Stores the full `User` (or `null`).                                                                                                                 |
+| Posts per user       | TanStack Query, key `['posts', userId]`                    | `staleTime: Infinity` so locally created posts survive re-selecting the user during the session.                                                    |
+| Created post         | `useMutation` → `setQueryData(['posts', userId], prepend)` | Server response is merged with a **local unique id** (`crypto.randomUUID()` or a negative counter) because the API always returns `id: 101`.        |
+| Form fields + errors | `useForm` in `PostForm`                                    | `mode: 'onSubmit'`, `reValidateMode: 'onChange'`: errors appear after the first submit and clear as the user fixes them. `form.reset()` on success. |
 
 **QueryClient defaults:** `retry: 1` in the app; `retry: false` in tests (so error tests are fast and deterministic). `refetchOnWindowFocus: false`.
 
@@ -147,14 +150,14 @@ These also make tests query by role/label, as Testing Library recommends.
 
 Behavior-first tests: query by role/label/text, interact with `user-event`, mock the network with MSW. No snapshot tests, no testing implementation details.
 
-| # | Test | Covers |
-|---|------|--------|
-| 1 | `filterUsers` unit test | Case-insensitive substring match, empty term returns all |
-| 2 | `postSchema` unit test | Empty and whitespace-only fields fail with the right messages; valid input passes trimmed |
-| 3 | `UserList` integration | Loading indicator → users rendered → search filters → empty message (AC-1, AC-2, AC-3) |
-| 4 | `UserList` error | Server 500 → error alert + retry button (AC-4) |
-| 5 | `PostForm` validation | Submitting empty shows both errors, no request sent (AC-6) |
-| 6 | `UserPosts` create flow | Valid submit → new post appears first, form cleared (AC-7) |
+| #   | Test                    | Covers                                                                                    |
+| --- | ----------------------- | ----------------------------------------------------------------------------------------- |
+| 1   | `filterUsers` unit test | Case-insensitive substring match, empty term returns all                                  |
+| 2   | `postSchema` unit test  | Empty and whitespace-only fields fail with the right messages; valid input passes trimmed |
+| 3   | `UserList` integration  | Loading indicator → users rendered → search filters → empty message (AC-1, AC-2, AC-3)    |
+| 4   | `UserList` error        | Server 500 → error alert + retry button (AC-4)                                            |
+| 5   | `PostForm` validation   | Submitting empty shows both errors, no request sent (AC-6)                                |
+| 6   | `UserPosts` create flow | Valid submit → new post appears first, form cleared (AC-7)                                |
 
 Tests 1–3 are the minimum; 4–6 are added if time allows.
 
