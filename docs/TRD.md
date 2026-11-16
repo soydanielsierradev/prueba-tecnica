@@ -38,7 +38,7 @@ src/
 │   ├── api/
 │   │   └── client.ts        # fetch wrapper: base URL, JSON, error on !ok
 │   └── components/
-│       ├── LoadingState.tsx # skeletons with role="status"
+│       ├── LoadingState.tsx # skeletons with role="status" (variant: list | cards)
 │       └── ErrorState.tsx   # shadcn Alert + optional retry button
 ├── features/
 │   ├── users/
@@ -72,7 +72,7 @@ src/
 
 - **Container / presentational split:** containers (`UserList`, `UserPosts`) call hooks; presentational components receive props only and never fetch.
 - **Pure logic out of components:** `filterUsers` and `postSchema` have no React imports.
-- `features/users` must not import from `features/posts` and the reverse. Only `App.tsx` composes them.
+- `features/users` must not import from `features/posts` and the reverse. Only `App.tsx` composes them. When posts needs user data it declares its own minimal contract (`PostAuthor` in `features/posts/types.ts`); `App` passes a `User`, which satisfies it structurally.
 - No `any`. API responses are typed through `types.ts`.
 - Imports use the `@/` alias (`@/features/...`, `@/components/ui/...`), configured in both `vite.config.ts` and `tsconfig`.
 - `components/ui` holds only shadcn primitives; app-specific components live in their feature.

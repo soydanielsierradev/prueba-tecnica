@@ -135,7 +135,7 @@ main.tsx
       │  ├─ UserSearch          props: value, onChange
       │  ├─ LoadingState / ErrorState
       │  └─ UserListItem[]      props: user, isSelected, onSelect
-      └─ UserPosts              props: user, onBack · usePosts(user.id)
+      └─ UserPosts              props: author (PostAuthor ← User), onBack · usePosts(author.id)
          ├─ LoadingState / ErrorState
          ├─ PostForm            props: userId · useCreatePost(), useForm()
          └─ PostList            props: posts

@@ -75,13 +75,13 @@ Single column. Shows **either** the list **or** the selected user's posts.
 
 ### 4.2 Posts pane
 
-| State                      | UI                                                                                             |
-| -------------------------- | ---------------------------------------------------------------------------------------------- |
-| No user selected (desktop) | Centered empty state: `Users` icon + "Select a user to see their posts"                        |
-| Loading                    | Header with the user's name (already known) + 3 `Skeleton` cards, `aria-label="Loading posts"` |
-| Error                      | Same `ErrorState` pattern: "Couldn't load posts" + Retry                                       |
-| Loaded                     | User header → `PostForm` card → list of post `Card`s, newest first                             |
-| Loaded, zero posts         | Form + muted text "This user has no posts yet"                                                 |
+| State                      | UI                                                                                                                              |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| No user selected (desktop) | Centered empty state: `Users` icon + "Select a user to see their posts"                                                         |
+| Loading                    | Header with the user's name (already known) + 3 `Skeleton` cards (`LoadingState variant="cards"`), `aria-label="Loading posts"` |
+| Error                      | Same `ErrorState` pattern: "Couldn't load posts" + Retry                                                                        |
+| Loaded                     | User header → `PostForm` card → list of post `Card`s, newest first                                                              |
+| Loaded, zero posts         | Form + muted text "This user has no posts yet"                                                                                  |
 
 **User header:** name (`text-lg font-semibold`), email and company name in muted text, post count `Badge` ("10 posts").
 
