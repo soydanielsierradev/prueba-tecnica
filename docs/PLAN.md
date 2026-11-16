@@ -56,7 +56,7 @@ PRD, TRD, UI/UX, FLOW, DATA, and PLAN in `docs/`.
 1. Install `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/user-event`, `@testing-library/jest-dom`, `msw`.
 2. Vitest config (in `vite.config.ts` or `vitest.config.ts`): `environment: 'jsdom'`, `setupFiles: './src/test/setup.ts'`, `globals: true`.
 3. Add `"types": ["vitest/globals", "@testing-library/jest-dom"]` where needed.
-4. Create `src/test/`: `fixtures.ts`, `handlers.ts`, `server.ts`, `setup.ts` (jest-dom import, `server.listen({ onUnhandledRequest: 'error' })`, `resetHandlers`, `close`), `renderWithClient.tsx` (fresh `QueryClient` with `retry: false` per test).
+4. Create `src/test/`: `fixtures.ts`, `handlers.ts`, `server.ts`, `setup.ts` (jest-dom import, `server.listen({ onUnhandledFrame: 'error' })` (MSW 3 renamed `onUnhandledRequest`), `resetHandlers`, `close`), `renderWithClient.tsx` (fresh `QueryClient` with `retry: false` per test).
 5. Scripts: `"test": "vitest"`, `"test:run": "vitest run"`.
 6. One smoke test: `App` renders the title.
 
