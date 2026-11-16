@@ -2,6 +2,7 @@ import { ArrowLeft } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { describeError } from '@/shared/api/client'
 import { ErrorState } from '@/shared/components/ErrorState'
 import { LoadingState } from '@/shared/components/LoadingState'
 import type { PostAuthor } from '../types'
@@ -57,7 +58,7 @@ export function UserPosts({ author, onBack }: UserPostsProps) {
       ) : isError ? (
         <ErrorState
           title="Couldn't load posts"
-          message={error.message}
+          message={describeError(error)}
           onRetry={() => void refetch()}
         />
       ) : (

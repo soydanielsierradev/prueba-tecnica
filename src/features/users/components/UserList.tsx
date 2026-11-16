@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { describeError } from '@/shared/api/client'
 import { ErrorState } from '@/shared/components/ErrorState'
 import { LoadingState } from '@/shared/components/LoadingState'
 import { filterUsers } from '../filterUsers'
@@ -22,7 +23,7 @@ export function UserList({ selectedUserId, onSelectUser }: UserListProps) {
     return (
       <ErrorState
         title="Couldn't load users"
-        message={error.message}
+        message={describeError(error)}
         onRetry={() => void refetch()}
       />
     )

@@ -10,6 +10,14 @@ export class ApiError extends Error {
   }
 }
 
+// User-facing explanation for a failed request: never the raw browser message.
+export function describeError(error: unknown): string {
+  if (error instanceof ApiError) {
+    return `The server responded with an error (${error.status}). Please try again.`
+  }
+  return 'Check your connection and try again.'
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, init)
 
