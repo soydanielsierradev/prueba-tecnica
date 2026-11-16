@@ -4,7 +4,7 @@ import { UserPosts } from '@/features/posts/components/UserPosts'
 import { UserList } from '@/features/users/components/UserList'
 import type { User } from '@/features/users/types'
 import { cn } from '@/lib/utils'
-import { tileClass } from '@/shared/lib/tiles'
+import { AppLogo } from '@/shared/components/AppLogo'
 
 const panelClass =
   'h-full min-h-0 overflow-hidden rounded-[1.75rem] bg-card shadow-[0_8px_24px_-12px] shadow-black/10'
@@ -33,9 +33,16 @@ function App() {
       >
         <ScrollArea className="h-full">
           <div className="flex flex-col gap-5 p-5">
-            <header>
-              <h1 className="text-lg font-semibold tracking-tight">User Posts Explorer</h1>
-              <p className="text-sm text-muted-foreground">Pick a user to read and write posts.</p>
+            <header className="flex items-center gap-3">
+              <AppLogo className="size-11" />
+              <div>
+                <h1 className="text-lg leading-tight font-semibold tracking-tight">
+                  User Posts Explorer
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Pick a user to read and write posts.
+                </p>
+              </div>
             </header>
             <UserList selectedUserId={selectedUser?.id ?? null} onSelectUser={setSelectedUser} />
           </div>
@@ -49,22 +56,7 @@ function App() {
             <UserPosts author={selectedUser} onBack={handleBack} />
           ) : (
             <div className="flex min-h-[calc(100svh-2rem)] flex-col items-center justify-center gap-8 p-8 text-center">
-              <div aria-hidden="true" className="grid grid-cols-2 gap-3">
-                {[0, 1, 2].map((index) => (
-                  <div
-                    key={index}
-                    className={cn(
-                      'flex size-28 rounded-3xl p-4 text-5xl leading-none font-light text-tile-ink md:size-36',
-                      tileClass(index),
-                    )}
-                  >
-                    {String(index + 1).padStart(2, '0')}
-                  </div>
-                ))}
-                <div className="flex size-28 rounded-3xl bg-primary p-4 text-5xl leading-none font-light text-primary-foreground md:size-36">
-                  04
-                </div>
-              </div>
+              <AppLogo className="size-60 md:size-72" />
               <p className="max-w-sm text-2xl font-bold tracking-tight text-balance text-primary">
                 Select a user to see their posts
               </p>

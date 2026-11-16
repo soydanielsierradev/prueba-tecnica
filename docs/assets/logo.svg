@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="User Posts Explorer">
+  <rect x="0" y="0" width="46" height="46" rx="12" fill="#f5dfac"/>
+  <rect x="54" y="0" width="46" height="46" rx="12" fill="#c9c4f3"/>
+  <rect x="0" y="54" width="46" height="46" rx="12" fill="#bfe0f5"/>
+  <rect x="54" y="54" width="46" height="46" rx="12" fill="#ce2320"/>
+  <g font-family="Geist, system-ui, sans-serif" font-weight="300" font-size="18" letter-spacing="-0.5">
+    <text x="8" y="23" fill="#11161f">01</text>
+    <text x="62" y="23" fill="#11161f">02</text>
+    <text x="8" y="77" fill="#11161f">03</text>
+    <text x="62" y="77" fill="#ffffff">04</text>
+  </g>
+</svg>
