@@ -37,9 +37,12 @@ src/
 ├── shared/
 │   ├── api/
 │   │   └── client.ts        # fetch wrapper: base URL, JSON, error on !ok
-│   └── components/
-│       ├── LoadingState.tsx # skeletons with role="status" (variant: list | cards)
-│       └── ErrorState.tsx   # shadcn Alert + optional retry button
+│   ├── components/
+│   │   ├── AppLogo.tsx      # inline SVG brand mark (2×2 numbered tiles)
+│   │   ├── LoadingState.tsx # skeletons with role="status" (variant: list | cards)
+│   │   └── ErrorState.tsx   # shadcn Alert + optional retry button
+│   └── lib/
+│       └── tiles.ts         # pastel tile class cycle shared by users and posts
 ├── features/
 │   ├── users/
 │   │   ├── api.ts           # getUsers()
