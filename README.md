@@ -1,143 +1,145 @@
 <p align="center">
-  <img src="docs/assets/logo.svg" alt="User Posts Explorer logo" width="96" height="96" />
+  <img src="docs/assets/logo.svg" alt="Logo de User Posts Explorer" width="96" height="96" />
 </p>
 
 <h1 align="center">User Posts Explorer</h1>
 
 <p align="center">
-  A small React + TypeScript app on top of the public
-  <a href="https://jsonplaceholder.typicode.com">JSONPlaceholder</a> API: search users, read their posts, publish a new one.
+  Una pequeña app en React + TypeScript sobre la API pública
+  <a href="https://jsonplaceholder.typicode.com">JSONPlaceholder</a>: buscar usuarios, leer sus publicaciones y crear una nueva.
   <br />
-  Built as a Frontend React technical assessment (3-hour budget).
+  Desarrollada como prueba técnica para una posición de Frontend React (tiempo máximo: 3 horas).
 </p>
 
-![User Posts Explorer on desktop: users sidebar on the left, the selected user's numbered post tiles and the red new-post composer on the right](docs/screenshots/desktop.png)
+![User Posts Explorer en escritorio: barra lateral de usuarios a la izquierda; a la derecha, las publicaciones numeradas del usuario seleccionado y el formulario rojo para crear una nueva](docs/screenshots/desktop.png)
 
-## Features
+## Funcionalidades
 
-| Requirement                         | Where to see it                                                                                                              |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| User list with search by name       | Left sidebar; case-insensitive substring match, with an explicit "No users match" state                                      |
-| A user's posts                      | Click a user: numbered post tiles in the right panel, which scrolls independently of the sidebar                             |
-| Create a post with a validated form | The red "New post" tile; title and body are required (whitespace-only is rejected)                                           |
-| New post appears in the list        | It lands first with a "New" badge (the API does not persist it, so it lives in the client cache)                             |
-| Visible loading and error states    | Skeletons while loading; alerts with **Retry** for failed loads; an inline error that keeps your input when publishing fails |
-| Tests                               | 25 tests with Vitest + Testing Library + MSW                                                                                 |
+| Requisito                                     | Dónde verlo                                                                                                                           |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Lista de usuarios con búsqueda por nombre     | Barra lateral izquierda; coincidencia parcial sin distinguir mayúsculas, con un estado explícito "No users match"                     |
+| Publicaciones de un usuario                   | Al elegir un usuario: tarjetas numeradas en el panel derecho, que tiene su propio scroll, independiente de la barra lateral           |
+| Crear una publicación con formulario validado | La tarjeta roja "New post"; título y texto son obligatorios (no se aceptan valores con solo espacios)                                 |
+| La nueva publicación aparece en la lista      | Aparece primera, con la etiqueta "New" (la API no la guarda, así que vive en la caché del cliente)                                    |
+| Estados de carga y de error visibles          | Skeletons mientras carga; alertas con **Retry** si falla una carga; un error en línea que conserva lo escrito si falla la publicación |
+| Tests                                         | 25 tests con Vitest + Testing Library + MSW                                                                                           |
+
+La interfaz está en inglés, como define [`CLAUDE.md`](CLAUDE.md); la documentación de producto y técnica en [`docs/`](docs) también.
 
 <details>
-<summary>More screenshots</summary>
+<summary>Más capturas</summary>
 
-After publishing a post (the new post is numbered 11 and shown first; the composer moves on to 12):
+Después de publicar (la nueva publicación lleva el número 11 y aparece primera; el formulario pasa a mostrar el 12):
 
-![Desktop view after publishing a post](docs/screenshots/desktop-published.png)
+![Vista de escritorio después de publicar](docs/screenshots/desktop-published.png)
 
-Mobile (one panel at a time, with a back button):
+Móvil (un panel a la vez, con botón para volver):
 
-<img src="docs/screenshots/mobile.png" alt="Mobile view of a user's posts" width="320" />
+<img src="docs/screenshots/mobile.png" alt="Vista móvil de las publicaciones de un usuario" width="320" />
 
 </details>
 
-## How to run
+## Cómo ejecutarlo
 
-**Requirements:** Node 24 LTS (any Node ≥ 22.12 works; Vitest 5, jsdom and MSW 3 need it). The repo pins it in `mise.toml` and `.nvmrc`.
+**Requisitos:** Node 24 LTS (sirve cualquier Node ≥ 22.12; lo exigen Vitest 5, jsdom y MSW 3). El repositorio lo fija en `mise.toml` y `.nvmrc`.
 
 ```bash
-mise install        # or: nvm use
+mise install        # o bien: nvm use
 npm install
 npm run dev         # http://localhost:5173
 ```
 
-| Command            | What it does                  |
-| ------------------ | ----------------------------- |
-| `npm run dev`      | Dev server                    |
-| `npm test`         | Vitest in watch mode          |
-| `npm run test:run` | Single test run (25 tests)    |
-| `npm run build`    | Type-check + production build |
-| `npm run lint`     | oxlint                        |
-| `npm run format`   | Prettier                      |
+| Comando            | Qué hace                               |
+| ------------------ | -------------------------------------- |
+| `npm run dev`      | Servidor de desarrollo                 |
+| `npm test`         | Vitest en modo watch                   |
+| `npm run test:run` | Ejecuta los tests una vez (25 tests)   |
+| `npm run build`    | Chequeo de tipos + build de producción |
+| `npm run lint`     | oxlint                                 |
+| `npm run format`   | Prettier                               |
 
-## Decisions
+## Decisiones
 
-**Spec first.** Before any code I wrote short specs in [`docs/`](docs): [PRD](docs/PRD.md) (scope and acceptance criteria AC-1…AC-8), [TRD](docs/TRD.md) (stack and architecture), [UI-UX](docs/UI-UX.md), [FLOW](docs/FLOW.md), [DATA](docs/DATA.md) (types and API contract) and [PLAN](docs/PLAN.md) (build order). [`CLAUDE.md`](CLAUDE.md) holds the rules the AI agent had to follow. Then I built phase by phase, approving a plan before each one.
+**Primero la especificación.** Antes de escribir código redacté especificaciones cortas en [`docs/`](docs): [PRD](docs/PRD.md) (alcance y criterios de aceptación AC-1…AC-8), [TRD](docs/TRD.md) (stack y arquitectura), [UI-UX](docs/UI-UX.md), [FLOW](docs/FLOW.md), [DATA](docs/DATA.md) (tipos y contrato de la API) y [PLAN](docs/PLAN.md) (orden de construcción). [`CLAUDE.md`](CLAUDE.md) contiene las reglas que tenía que seguir el agente de IA. Después construí fase por fase, aprobando un plan antes de cada una.
 
 **Stack**
 
-- **Vite + React + TypeScript (`strict`).** No SSR or routing needs, so Next.js would add setup without value.
-- **TanStack Query** for server state: loading, error, retry and caching out of the box, and no race conditions when switching users quickly (each user has its own query key).
-- **React Hook Form + Zod.** The schema is the single source of truth for validation _and_ types (`z.infer`); `.trim()` makes whitespace-only input invalid.
-- **Tailwind CSS v4 + shadcn/ui.** Accessible primitives whose code lives in the repo, themed with project tokens.
-- **Vitest + Testing Library + MSW.** Tests go through the real `fetch` path; no mocked hooks.
+- **Vite + React + TypeScript (`strict`).** No hacían falta SSR ni rutas, así que Next.js sumaba configuración sin aportar valor.
+- **TanStack Query** para el estado del servidor: carga, error, reintento y caché resueltos, y sin condiciones de carrera al cambiar rápido de usuario (cada usuario tiene su propia query key).
+- **React Hook Form + Zod.** El schema es la única fuente de verdad para la validación _y_ para los tipos (`z.infer`); `.trim()` hace que un valor con solo espacios sea inválido.
+- **Tailwind CSS v4 + shadcn/ui.** Componentes accesibles cuyo código vive en el repositorio, personalizados con tokens propios.
+- **Vitest + Testing Library + MSW.** Los tests pasan por el `fetch` real; no se mockean hooks.
 
-**Architecture**
+**Arquitectura**
 
-- **Feature folders** (`src/features/users`, `src/features/posts`) with a **container / presentational** split: containers call hooks, presentational components only receive props.
-- **The features never import each other.** Only `App.tsx` composes them. The posts feature declares its own `PostAuthor` type (id, name, email, company); `App` passes a `User`, which TypeScript accepts structurally.
-- **Pure logic is framework-free** (`filterUsers`, `postSchema`, `describeError`), so it is unit-tested directly.
+- **Carpetas por feature** (`src/features/users`, `src/features/posts`) con separación **contenedor / presentacional**: los contenedores usan los hooks y los presentacionales solo reciben props.
+- **Las features nunca se importan entre sí.** Solo `App.tsx` las compone. La feature de posts declara su propio tipo `PostAuthor` (id, name, email, company); `App` le pasa un `User`, que TypeScript acepta por tipado estructural.
+- **La lógica pura no depende de React** (`filterUsers`, `postSchema`, `describeError`), así que se testea directamente.
 
-**Notable details**
+**Detalles destacables**
 
-- **`POST /posts` always returns `id: 101` and saves nothing.** On success the post gets a local `crypto.randomUUID()` id (no duplicate React keys) and is prepended to the user's cached posts with `setQueryData`. `invalidateQueries` would refetch and lose it. `onSuccess` uses the `userId` captured at submit time, so the post lands in the right list even if you switch users before the response.
-- **`staleTime: Infinity`.** The API data never changes, and it keeps locally created posts alive when you revisit a user during the session.
-- **No router.** Two views side by side don't need one; the trade-off (no shareable URLs) is listed below.
-- **Errors explain what to do.** "Check your connection and try again", or the HTTP status for server errors, never the raw browser message.
-- **Accessibility.** WCAG AA contrast (computed from the theme tokens), labelled controls, `role="status"` / `role="alert"` regions, keyboard order, and managed focus on mobile when switching panels.
-- **TDD.** For logic and key behaviors I committed the failing test first (`test:`) and then the implementation (`feat:`), so the history shows each RED → GREEN step.
+- **`POST /posts` siempre devuelve `id: 101` y no guarda nada.** Al confirmarse, la publicación recibe un id local con `crypto.randomUUID()` (sin keys duplicadas en React) y se agrega al principio de la caché del usuario con `setQueryData`. `invalidateQueries` volvería a pedir los datos y la perdería. `onSuccess` usa el `userId` capturado al enviar, así que la publicación cae en la lista correcta aunque cambies de usuario antes de la respuesta.
+- **`staleTime: Infinity`.** Los datos de la API nunca cambian, y así las publicaciones creadas se mantienen al volver a un usuario durante la sesión.
+- **Sin router.** Dos vistas lado a lado no lo necesitan; la contrapartida (no hay URLs para compartir) figura más abajo.
+- **Los errores dicen qué hacer.** "Check your connection and try again", o el código HTTP si el error es del servidor; nunca el mensaje crudo del navegador.
+- **Accesibilidad.** Contraste WCAG AA (calculado sobre los tokens del tema), controles con label, regiones `role="status"` / `role="alert"`, orden de teclado lógico y foco gestionado en móvil al cambiar de panel.
+- **TDD.** Para la lógica y los comportamientos clave hice primero el commit del test que fallaba (`test:`) y después el de la implementación (`feat:`), así el historial muestra cada paso RED → GREEN.
 
-**Design.** The visual direction comes from a reference I chose (a promo calendar with pastel numbered tiles). I used the Impeccable design skill for Claude Code: product context in [`PRODUCT.md`](PRODUCT.md), a written direction contract, an independent design review, and the resulting system documented in [`DESIGN.md`](DESIGN.md). The tiles carry no arrows like the reference does, because posts are not clickable and an arrow would promise an action that does not exist.
+**Diseño.** La dirección visual sale de una referencia que elegí (un calendario promocional con tarjetas pastel numeradas). Usé el skill de diseño Impeccable para Claude Code: contexto de producto en [`PRODUCT.md`](PRODUCT.md), un contrato de dirección escrito, una revisión de diseño independiente y el sistema resultante documentado en [`DESIGN.md`](DESIGN.md). A diferencia de la referencia, las tarjetas no llevan flechas: las publicaciones no son clickeables y una flecha prometería una acción que no existe.
 
-## What I'd do with more time
+## Qué haría con más tiempo
 
-- **URL routing** (`/users/:id`) for shareable links and browser back/forward.
-- **Optimistic updates** for post creation, with rollback on error.
-- **Persist created posts** across reloads (TanStack Query persister + `localStorage`).
-- **Scale to real data volumes:** server-side pagination with `useInfiniteQuery`, server-side search with debounce, and list virtualization.
-- **E2E tests** with Playwright for the full flow, plus visual regression on the screenshots.
-- **CI** (GitHub Actions running lint, type-check, tests and build on every push).
-- **Dark mode** and **i18n**.
-- **Error monitoring** (e.g. Sentry) and a global error boundary.
+- **Rutas en la URL** (`/users/:id`) para poder compartir enlaces y usar atrás/adelante del navegador.
+- **Actualizaciones optimistas** al crear publicaciones, con rollback si falla.
+- **Persistir las publicaciones creadas** al recargar (persister de TanStack Query + `localStorage`).
+- **Escalar a volúmenes reales:** paginación del lado del servidor con `useInfiniteQuery`, búsqueda en el servidor con debounce y virtualización de listas.
+- **Tests E2E** con Playwright para el flujo completo, más regresión visual sobre las capturas.
+- **CI** (GitHub Actions con lint, chequeo de tipos, tests y build en cada push).
+- **Modo oscuro** e **internacionalización**.
+- **Monitoreo de errores** (por ejemplo, Sentry) y un error boundary global.
 
-## How I used AI
+## Cómo usé la IA
 
-I worked with Claude Code (Claude Opus) as a pair: **I directed, the AI executed, and every step went through my review.** The spec documents and `CLAUDE.md` were the main tool: they gave the agent explicit scope, stack and rules, so it didn't have to guess. Each build phase started in planning mode and waited for my approval before any code was written.
+Trabajé con Claude Code (Claude Opus) como pareja de programación: **yo dirigí, la IA ejecutó y cada paso pasó por mi revisión.** Los documentos de especificación y `CLAUDE.md` fueron la herramienta principal: le dieron al agente un alcance, un stack y reglas explícitas, para que no tuviera que adivinar. Cada fase empezó en modo planificación y esperó mi aprobación antes de escribir código.
 
-**What I asked for**
+**Qué le pedí**
 
-- Drafting the six spec documents from the assessment brief, then `CLAUDE.md` with the agent rules.
-- Planning and implementing each phase with TDD and incremental conventional commits.
-- A visual redesign from a reference image, with independent design and code reviews.
-- A running log of decisions and likely interview questions.
+- Redactar los seis documentos de especificación a partir del enunciado, y después `CLAUDE.md` con las reglas para el agente.
+- Planificar e implementar cada fase con TDD y commits convencionales incrementales.
+- Un rediseño visual a partir de una imagen de referencia, con revisiones independientes de diseño y de código.
+- Un registro de decisiones y de posibles preguntas de entrevista.
 
-**What I accepted**
+**Qué acepté**
 
-- The overall spec structure, the acceptance criteria table, and the early detection of the `id: 101` pitfall.
-- TanStack Query for server state, after weighing it against hand-rolled `useEffect` fetching.
-- MSW for tests, the `PostAuthor` contract to keep features decoupled, and an extra test for the HTTP client that the plan did not include.
-- The design direction, after confirming it in writing before anything was built.
+- La estructura general de las especificaciones, la tabla de criterios de aceptación y la detección temprana del problema del `id: 101`.
+- TanStack Query para el estado del servidor, después de compararlo con hacer el fetching a mano con `useEffect`.
+- MSW para los tests, el contrato `PostAuthor` para mantener desacopladas las features y un test extra del cliente HTTP que el plan no incluía.
+- La dirección de diseño, después de confirmarla por escrito antes de construir nada.
 
-**What I corrected or decided myself**
+**Qué corregí o decidí yo**
 
-| Topic          | AI proposal or behavior                                   | My correction / decision                                                                       |
-| -------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Styling        | CSS Modules                                               | Tailwind CSS v4 + shadcn/ui                                                                    |
-| Forms          | Manual validation with a pure function                    | React Hook Form + Zod                                                                          |
-| "Backend" doc  | A backend spec for an app with no backend                 | I questioned it; it became `docs/DATA.md` (data model + API contract)                          |
-| Scope          | Long documents                                            | Kept them short because of the 3-hour budget                                                   |
-| Design         | Arrows on tiles, copied from the reference                | Removed: posts are not clickable                                                               |
-| Commit hygiene | Chained commands with `;`, which committed a broken build | Caught in the output; fixed and amended **before** pushing (pushed history is never rewritten) |
-| Contrast       | Reported muted text at ~6:1                               | The independent review measured ~4.7:1; the token was darkened to ~7:1                         |
+| Tema                | Propuesta o comportamiento de la IA                             | Mi corrección / decisión                                                                                   |
+| ------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Estilos             | CSS Modules                                                     | Tailwind CSS v4 + shadcn/ui                                                                                |
+| Formularios         | Validación manual con una función pura                          | React Hook Form + Zod                                                                                      |
+| Documento "Backend" | Una especificación de backend para una app que no tiene backend | Lo cuestioné; pasó a ser `docs/DATA.md` (modelo de datos + contrato de la API)                             |
+| Alcance             | Documentos largos                                               | Los mantuve cortos por el límite de 3 horas                                                                |
+| Diseño              | Flechas en las tarjetas, copiadas de la referencia              | Eliminadas: las publicaciones no son clickeables                                                           |
+| Higiene de commits  | Encadenó comandos con `;` y se commiteó un build roto           | Lo detecté en la salida; se corrigió y enmendó **antes** del push (nunca se reescribe historial publicado) |
+| Contraste           | Informó que el texto secundario tenía ~6:1                      | La revisión independiente midió ~4.7:1; se oscureció el token hasta ~7:1                                   |
 
-**Things the AI caught or worked around that I verified:** the installed Node 20 could not run Vitest 5 / jsdom / MSW 3 (pinned Node 24); the current Vite template ships oxlint and TypeScript 7 (no `baseUrl`); shadcn's `radix-nova` registry no longer has the `form` component (used `field` + RHF `Controller`); MSW 3 renamed `onUnhandledRequest` to `onUnhandledFrame`; and shadcn components import `cn` from an npm package, which I checked was the official shadcn one before accepting it.
+**Cosas que la IA detectó o resolvió y que yo verifiqué:** el Node 20 instalado no podía correr Vitest 5 / jsdom / MSW 3 (se fijó Node 24); la plantilla actual de Vite trae oxlint y TypeScript 7 (sin `baseUrl`); el registro `radix-nova` de shadcn ya no incluye el componente `form` (se usó `field` + `Controller` de RHF); MSW 3 renombró `onUnhandledRequest` a `onUnhandledFrame`; y los componentes de shadcn importan `cn` desde un paquete npm, que verifiqué que fuera el oficial de shadcn antes de aceptarlo.
 
-## Project structure
+## Estructura del proyecto
 
 ```
 src/
-├── App.tsx                 # composes the two features; selection + panels
+├── App.tsx                 # compone las dos features; selección y paneles
 ├── features/
-│   ├── users/              # api, types, useUsers, filterUsers, components
-│   └── posts/              # api, types, usePosts, useCreatePost, postSchema, components
-├── shared/                 # api client, LoadingState, ErrorState, AppLogo, tile helper
-├── components/ui/          # shadcn primitives
-└── test/                   # MSW server, handlers, fixtures, render helper
-docs/                       # PRD, TRD, UI-UX, FLOW, DATA, PLAN, screenshots
+│   ├── users/              # api, types, useUsers, filterUsers, componentes
+│   └── posts/              # api, types, usePosts, useCreatePost, postSchema, componentes
+├── shared/                 # cliente de API, LoadingState, ErrorState, AppLogo, helper de tarjetas
+├── components/ui/          # componentes base de shadcn
+└── test/                   # servidor MSW, handlers, fixtures, helper de render
+docs/                       # PRD, TRD, UI-UX, FLOW, DATA, PLAN, capturas
 ```

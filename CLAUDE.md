@@ -61,8 +61,8 @@ Run `test:run`, `build`, and `lint` after every PLAN step. Do not move on with a
 
 ## Scope guard
 
-Anything not in the PRD goes to the README's "What I'd do with more time" list, not into the code. When a decision is unclear, ask instead of guessing.
+Anything not in the PRD goes to the README's "Qué haría con más tiempo" list, not into the code. When a decision is unclear, ask instead of guessing.
 
 ## Language
 
-All code, comments, UI copy, docs, and commit messages are in English.
+All code, comments, UI copy, docs, and commit messages are in English. Exception: `README.md` is written in neutral Spanish, at the author's request.
